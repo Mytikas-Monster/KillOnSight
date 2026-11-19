@@ -1,7 +1,6 @@
+<img width="1280" height="640" alt="mytikas" src="https://github.com/user-attachments/assets/04d7d3df-ad99-45a3-86d4-16ea0b3579d3" />
+
 # KillOnSight
-
-## KILL ON SIGHT
-
 
 `/kos` opens the window (or minimap button). Shared kill list + death feed: enemy, victim, when, last known location.
 
