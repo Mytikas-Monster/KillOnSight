@@ -1,0 +1,14 @@
+## Interface: 11509, 16001, 20506
+## Title: Kill on Sight
+## Notes: A guild kill list with bank-escrowed bounties. Enemies who kill a guild member go on the board automatically, with a shared feed of who killed whom; right-click a name to start a pending bounty job that goes live only when its gold is in the guild bank. Every bounty asks 3g, the killer is owed 70%, the bank keeps 30%, the last known spot becomes an addon-only map pin and is shared with the bounty, and an unclaimed bounty goes back to its payer after a week.
+## Author: Beast
+## Version: 1.4.6
+## SavedVariables: KillOnSightDB
+## X-Category: PvP
+
+Bootstrap.lua
+libs\LibStub.lua
+libs\CallbackHandler-1.0.lua
+libs\HereBeDragons-2.0.lua
+libs\HereBeDragons-Pins-2.0.lua
+KillOnSight.lua

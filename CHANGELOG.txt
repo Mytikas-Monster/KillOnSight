@@ -1,0 +1,269 @@
+Kill on Sight (KoS) - changelog
+================================
+
+1.4.6  (19 Nov 2026)
+--------------------
+
+A flat ask, and the money rule spelled out in the game.
+
+  * Changed: every bounty asks 3g. The old +5g for each further guild member
+    killed is gone; existing unfunded rows are moved to 3g once on login.
+  * Added: a first-run notice, shown once per account on install/login. It
+    spells out the rule in game - a name or pending job is not a bounty, the
+    gold must be in the guild bank, and nobody should hunt until the row says
+    "bounty" - and cannot be closed until "I have read and understand this"
+    is ticked and the acknowledgement button is pressed.
+  * Changed: the window's top line now says there is no bounty without a
+    guild-bank deposit and not to hunt until it is funded.
+  * Changed: the Add box's blank gold field now falls back to 3g, not 5g.
+
+1.4.5  (19 Nov 2026)
+--------------------
+
+Map pins now clean themselves up.
+
+  * Changed: a pin retires 30 minutes after the last sighting/death, on both
+    the world map and the minimap, so old kills do not clutter people's maps.
+  * Changed: a later sighting (including one at the bounty click) starts the
+    30 minutes again.
+  * Unchanged: the kill and its "last known location" stay on the board and in
+    /kos where; only the map pins are removed.
+  * /kos pins now states the 30 minute limit.
+
+1.4.4  (19 Nov 2026)
+--------------------
+
+The last known location is now a pin on your maps.
+
+  * Added: one pin per spotted killer on the world map and the minimap, drawn
+    from the stored coordinates by HereBeDragons-Pins. These are addon-only
+    pins: WoW has no shared world marker an addon can place for other players.
+  * Added: /kos pins forces a refresh and reports how many pins are on each
+    map.
+  * Safety: a "nearby" point is drawn in rust and its tooltip says it is not
+    an exact killer pin. A row with no readable spot gets no pin at all.
+  * Safety: world map pins are removed in Forever's gamepad UI (the map canvas
+    is protected there); minimap pins stay. Input-mode changes are watched.
+  * Bundled HereBeDragons-Pins-2.0, with Bootstrap.lua loading Blizzard_WorldMap
+    before the library hooks the map canvas.
+  * No shared world marker API and no SetTexCoord; pins use one flat texture.
+
+1.4.3  (19 Nov 2026)
+--------------------
+
+Position capture now uses the same mapping library Olympus uses.
+
+  * Added: bundled LibStub, CallbackHandler-1.0 and HereBeDragons-2.0 under
+    libs\, loaded from the .toc before KillOnSight.lua.
+  * Changed: when C_Map cannot read a visible target, mouseover or nameplate
+    directly, HereBeDragons converts that unit's world position into the
+    observer's current Zone or Micro map. This is the Olympus-style path.
+  * Safety: the conversion is only accepted for an open Zone/Micro map, with
+    out-of-bounds points refused. A different map or bad data stays unseen and
+    still falls back to "last seen near where I died" at the death itself.
+  * No raw UnitPosition / GetMapPosFromWorldPos guesswork was introduced.
+
+1.4.2  (19 Nov 2026)
+--------------------
+
+The location is now part of the window and the guild announcement.
+
+  * Added: "LAST KNOWN LOCATION:" now sits at the foot of the enemy list, under
+    the ENEMY / BOUNTY / KILLS / STATE rows. It follows the selected enemy and
+    never disappears just because there is no bounty yet.
+  * Changed: /kos announce now says "last known location:" explicitly in the
+    guild message, instead of only trailing the position after the bounty line.
+  * Changed: the selected enemy's detail panel also labels that line "last
+    known location:".
+
+1.4.1  (19 Nov 2026)
+--------------------
+
+The location now actually shows up in chat.
+
+  * Fixed: the normal "on the board, no bounty funded" notice was the one line
+    that dropped the last known spot. It now ends with "last known location:
+    ..." like the pending, funded and guild-announce lines.
+  * Fixed: the death line now explicitly says "Where you were killed: ...", so
+    the observer's fallback is labelled honestly as "last seen near where I
+    died" rather than as a made-up exact pin.
+  * Added: /kos where [name] prints the stored spot and the raw map reads from
+    this client. If no spot was readable, it says so and shows which reads
+    failed (player / target / mouseover).
+  * Fixed: removed the UnitPosition-to-map fallback. On this client it could
+    convert an unreadable target into an invented point, so the addon fails
+    closed and falls back only to the observer's own death location.
+
+1.4.0  (19 Nov 2026)
+--------------------
+
+Where he was, a fairer split, and a badge over his head.
+
+  * Added: the last known position is captured when a guild member dies. WoW
+    cannot report an arbitrary player's location, so the addon uses the killer's
+    own position only while he is visible as a target, mouseover or nameplate.
+    If he is already gone, it records where the observer died and says
+    "last seen near where I died" - it never invents a pin.
+  * Added: that spot travels with the bounty on the guild row, appears in the
+    death and bounty chat lines, the pending-job line and the detail panel. A
+    later visible sighting (including one at the job click) replaces an older
+    one; "nearby" is never reported as exact, on this client or a guildmate's.
+  * Added: a small KoS badge on the nameplate of anyone with money on his head.
+    It is a nameplate icon, not a world marker: only players running the addon
+    see it. Unfunded, paid and refunded targets are not marked.
+  * Changed: the split is now 70/30 - the killer gets 70%, the guild bank keeps
+    30%. Existing profiles still on the old 10% move to 30% once; a custom cut
+    is left alone.
+  * Changed: the minimum a death asks for is 3g instead of 5g. Existing profiles
+    still on the old 5g default move to 3g once; a custom value is left alone.
+    Further kills still add 5g each.
+
+1.3.0  (19 Nov 2026)
+--------------------
+
+Right-click starts the bounty job itself.
+
+  * Added: right-click an enemy's name in either list (the death feed or the
+    board) to start a bounty job instantly. /kos bounty <name> does the same
+    from the keyboard. Left-click still only selects him.
+  * Added: the job is stored on the entry and shared with the guild at once, so
+    it survives a /reload and every member sees "pending job" before any money
+    moves. The window counts pending jobs in its subtitle; the rows and the
+    feed say "pending job". A shared job never arms another client's bank
+    watcher and never invents money.
+  * Changed: arming with the Fund button also creates a pending job, so every
+    way of starting a bounty says the same thing. Only a verified rise in the
+    guild bank's own gold turns the job live and pays anything out.
+  * Changed: after a bounty is paid or refunded, the killer's next kill waits
+    unfunded until somebody starts a new job - the old job does not carry over.
+  * Fixed: reopening a settled bounty now clears the old refund details as well
+    as the old payout.
+  * Fixed: the two name rows now register for right-clicks. Without that, the
+    client only sends left-clicks to the handler and right-click did nothing in
+    game even though it worked in the test harness.
+
+1.2.0  (19 Nov 2026)
+--------------------
+
+The board now remembers who killed whom, and a killer's name is a way into the
+bounty flow.
+
+  * Added: a guild death feed under the board - killer, victim, when, and the
+    bounty state. It is shared over the same guild channel as the board, so
+    every member running the addon sees the same history, including deaths that
+    happened before somebody installed it (the newest 50 travel in the digest).
+  * Added: click a killer's name in the feed to select him on the board and set
+    a bounty. If the board has forgotten him, the click puts him back with the
+    victim from the death row; if his old bounty was paid or refunded, the click
+    starts a fresh one. Nothing is paid by the click: Fund still asks for the
+    deposit first, and the bounty only goes live when the guild bank's own gold
+    shows it.
+  * Added: Mine / All on the feed, so you can show just your own deaths or the
+    whole guild's. /kos kills lists the same history in chat; /kos kills mine
+    limits it to deaths of yours.
+  * Added: a death row is history only. It never creates or resurrects a board
+    entry by itself, so a killer another member deliberately deleted stays
+    deleted until somebody clicks his name.
+  * Changed: /kos reset wipes the board and the bounties but keeps the guild
+    death history. The window is taller (540x760) to fit the feed between the
+    board and the detail panel, still on the game's own frame with Forever's
+    inset art.
+
+1.1.1  (18 Nov 2026)
+--------------------
+
+A death now registers even when the client leaves part of the recap out.
+
+  * Fixed: deaths were being thrown away by over-strict reading. The client
+    does not always fill every field of its death recap, and a detail it left
+    out was treated as proof that no player killed you. Now:
+      - a float timestamp counts (it is floored, not rejected);
+      - a killing blow with no event name still counts;
+      - a sourceFlags the client did not give is not a refusal;
+      - a destGUID this addon cannot parse no longer vetoes your own death
+        (only a different, parseable victim does);
+      - a GUID id longer than 16 hex digits is still the same player;
+      - no sourceGUID: the killer is looked up by the name the row gives.
+  * Fixed: an unreadable IsInInstance answer no longer counts as "you are in an
+    instance" - only a clear yes does.
+  * Added: a 2 s death watch, so a build that raises no PLAYER_DEAD at all still
+    records who killed you. It uses the same dedupe (killer@stamp), so the event
+    and the watch never count the same death twice.
+  * Added: retries at 0.3/1/2/4/8 s (was 0.3/1/2), for a recap that lands late.
+  * Added: one chat line at each death - "X killed you - added to the kill on
+    sight list (5g asked)", or, when a player killed you and nothing was
+    recorded, "died to X, but nothing was recorded: <why>". Once per death.
+  * Added: /kos recap - a diagnostic that prints C_DeathRecap, what
+    HasRecapEvents() and GetRecapEvents() answered, the first three rows with
+    every field, your own GUID and whether it parses, dead/instance state, and
+    what the addon made of the last death. Paste it when a death does not count.
+
+1.1.0  (18 Nov 2026)
+--------------------
+
+FIRST RELEASE.
+
+What it does
+  * An enemy player who kills a guild member is put on a guild-wide board
+    automatically: name, class, how many guild members he has killed, and who
+    he killed. Instances (battlegrounds and arenas) are ignored by default.
+  * The board is shared live with every guildmate who runs the addon, over the
+    guild addon channel. Rows merge by GUID and Lamport stamp, so two members
+    seeing the same kill end up with one row, not two.
+  * A window on the game's own portrait frame - the Character/Professions frame
+    - with the game's inset panels, the game's buttons and Forever's own art,
+    the same pieces the Happy Camper addon draws with. /kos opens it.
+
+The rule the addon enforces
+  * A bounty exists only when its money is already in the guild bank. A death
+    creates an UNFUNDED row ("no bounty is funded"); it pays nothing until
+    somebody puts the gold in.
+  * The deposit is verified against the guild bank's own balance
+    (GetGuildBankMoney), never against a promise. Part deposits add up: 3g and
+    then 2g funds a 5g bounty. If the balance cannot be read, no bounty is
+    issued.
+  * The killer is owed 90%; the guild keeps 10%. The cut is configurable
+    (/kos cut 0-50).
+  * Default bounty is 5g (/kos reward <gold>), and each further kill by the
+    same enemy adds another 5g to what a bounty would need.
+
+Money that has to move by hand
+  * No addon can move gold here: the deposit and the payout are done by a
+    person at the bank. The addon verifies, records and remembers.
+  * Anyone in the guild may fund an entry, record a payout, or remove an entry.
+    An entry with money in it cannot be removed until that money is settled.
+  * An unclaimed bounty goes back to whoever paid it in after one week (never
+    to a killer). The refund is two-step: the addon marks it due, and a person
+    confirms it after handing the gold over.
+
+Saying it out loud
+  * The guild bank cannot refund by itself, so an unhanded payment is stated in
+    officer chat and then keeps being stated until it is actually paid.
+  * Chat needs a real key press or click on this client, so the officer-chat
+    line is always a click (Officers button, /kos officers) - never a timer.
+  * Officer chat is used when this character is the guild master or first rank
+    under him; otherwise the line goes to guild chat. /kos officermode
+    auto|officer|guild overrides that.
+
+Commands
+  /kos                        open the window
+  /kos add <name> [gold] [why] put a name on the board by hand
+  /kos fund <name>            arm a bounty, then deposit that much in the bank
+  /kos paid <name>            record that the killer was handed his share
+  /kos refund <name>          mark an unclaimed bounty as going back
+  /kos handed <name>          confirm the refund was actually handed over
+  /kos owed                   what has not been handed over yet
+  /kos officers               say that in officer/guild chat (one click)
+  /kos remove <name> [force]  take an entry off the board
+  /kos reward <gold>          what a new bounty asks for (default 5)
+  /kos cut <percent>          0-50, the bank's share (default 10)
+  /kos days <days>            how long an unclaimed bounty waits (default 7)
+  /kos list | status | sync | announce | share | notices | minimap | reset
+
+Notes
+  * The combat-log event is restricted on this client and is never registered.
+    Deaths are read from the client's own death recap (PLAYER_DEAD +
+    C_DeathRecap), and your own killing blows from PARTY_KILL.
+  * Names are "First Surname" on this server; "Name-Realm" is refused.
+  * The guild bank balance has to have been read at least once (open the bank
+    once) before a deposit can be verified.
